@@ -1,0 +1,77 @@
+================================================================================
+               EXTENDED MANUAL FOR ADVANCED PARAMETERS AND OPTIONS
+================================================================================
+
+SUBCOMMAND: diff (File, Directory, and Binary Comparison)
+--------------------------------------------------------------------------------
+-B / --binary               : Switches the engine to high-speed binary mode. 
+                              Performs a byte-by-byte Longest Common Prefix (LCP)
+                              analysis on executable files (.exe, .dll) or firmware 
+                              images (.bin) and packs the delta payload using 
+                              ultra-fast LZ4 compression.
+
+--strip-trailing-cr         : Strips carriage return characters (\r) at the end 
+                              of lines. This is critical in Windows environments, 
+                              as it prevents false positives when comparing 
+                              Windows (CRLF) vs Linux (LF) files.
+
+-L <LABEL> / --label        : Replaces the filename in '---' and '+++' patch 
+                              headers with custom label text. Highly useful when 
+                              integrating the tool into external systems (e.g., Git).
+
+--tabsize <NUM>             : Sets a custom column width for side-by-side layout 
+                              rendering (-y / --side-by-side). 
+                              The default width is 35 characters.
+
+-I <RE>                     : Ignores changes where ALL modified lines within the 
+                              current hunk match a specified regular expression 
+                              (e.g., -I "version = ").
+
+-X <PATTERN> / --exclude    : Specifies an exclusion mask for recursive directory 
+                              traversal. Files matching the regular expression 
+                              (e.g., .*\.log) will be completely ignored.
+
+--speed-large-files         : Forces internal heuristic engine optimizations to 
+                              accelerate parsing and matching of massive text files.
+
+-c / --context              : Switches the output format to context diff, displaying 
+                              a fixed number of surrounding lines around changes.
+
+-y / --side-by-side         : Switches the output format to a side-by-side layout 
+                              for clear visual correlation of changes in the terminal.
+
+-e / --ed                   : Formats the output as a script of commands for the 
+                              'ed' text editor.
+
+-i / --ignore-case          : Enables case-insensitive content comparison.
+
+-B / --ignore-blank-lines   : Skips changes that consist entirely of adding or 
+                              deleting blank lines.
+
+
+SUBCOMMAND: patch (Applying Text and LZ4 Binary Patches)
+--------------------------------------------------------------------------------
+-B / --binary               : Switches the patch applier to binary mode. 
+                              Parses the compressed WIN_BIN patch container, triggers 
+                              the LZ4 streaming frame decoder in memory, and rebuilds 
+                              the modified firmware/executable onto the drive.
+
+-p <NUM> / --strip          : Strips the specified number of leading components/dirs 
+                              from pathnames found inside patch files (e.g., 
+                              converts a/src/main.rs to src/main.rs with -p1).
+
+-F <NUM> / --fuzz           : Sets the maximum fuzz factor (default: 2) to search 
+                              for nearby matching contexts if line numbers have 
+                              shifted up or down relative to the original.
+
+-R / --reverse              : Automatically reverses the patch file changes, turning 
+                              additions into deletions and vice versa to safely 
+                              roll back changes.
+
+-r <FILE> / --reject-file   : Redirects all failed patch hunks into a single 
+                              unified global reject file instead of generating 
+                              multiple local .rej files across directories.
+
+--dry-run                   : Runs a clean simulation of the patching process in memory. 
+                              Checks structure integrity and context without writing 
+                              any changes to the hard drive.

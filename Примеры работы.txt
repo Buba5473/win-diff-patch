@@ -1,0 +1,24 @@
+1. Текстовый режим (Сравнение и патчинг исходного кода/конфигов)
+
+# 1. Создание текстового патча (формат Unified Diff по умолчанию)
+win-diff-patch diff old_file.txt new_file.txt > my_changes.patch
+
+# 2. Прямое наложение патча (оригинальный файл будет перезаписан)
+win-diff-patch patch -i my_changes.patch old_file.txt
+
+# 3. Безопасное наложение (создаст бэкап old_file.txt.orig перед изменением)
+win-diff-patch patch -b -i my_changes.patch old_file.txt
+
+# 4. Наложение патча с записью результата в совершенно новый файл
+win-diff-patch patch -i my_changes.patch old_file.txt -o repaired_file.txt
+
+2. Бинарный режим (Сжатые LZ4-патчи для прошивок и EXE/DLL файлов)
+
+# 1. Генерация бинарного патча с использованием LCP-анализа и сжатия LZ4
+win-diff-patch diff -B firmware_v1.bin firmware_v2.bin > patch.lz4
+
+# 2. Применение бинарного LZ4-патча (оригинальный файл firmware_v1.bin обновится)
+win-diff-patch patch -B -i patch.lz4 firmware_v1.bin
+
+# 3. Применение бинарного патча с сохранением результата в отдельный файл прошивки
+win-diff-patch patch -B -i patch.lz4 firmware_v1.bin -o firmware_v2_restored.bin
